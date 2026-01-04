@@ -1,4 +1,10 @@
-// Package main contains report generation for the Sentry security audit module
+// Sentry - Dagger module for container security auditing
+// https://github.com/sylvester-francis/Sentry
+// Licensed under MIT - see LICENSE file
+
+// Package main provides report generation functionality for the Sentry module.
+// It implements the scoring algorithm, audit orchestration, and output formatting
+// for Markdown and JSON reports.
 package main
 
 import (

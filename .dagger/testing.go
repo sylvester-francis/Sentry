@@ -1,5 +1,9 @@
-// Package main contains testing functions for the Sentry security audit module
-// Run tests with: dagger call test
+// Sentry - Dagger module for container security auditing
+// https://github.com/sylvester-francis/Sentry
+// Licensed under MIT - see LICENSE file
+
+// Package main provides unit testing functionality for the Sentry module.
+// Tests are executed via Dagger with: dagger call test
 package main
 
 // ============================================================================

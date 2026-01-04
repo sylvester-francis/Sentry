@@ -1,4 +1,10 @@
-// Package main contains Trivy vulnerability scanner integration for the Sentry module
+// Sentry - Dagger module for container security auditing
+// https://github.com/sylvester-francis/Sentry
+// Licensed under MIT - see LICENSE file
+
+// Package main provides Trivy vulnerability scanner integration for Sentry.
+// It handles container export, Trivy execution, and JSON output parsing
+// to extract vulnerability information.
 package main
 
 import (

@@ -1,4 +1,10 @@
-// Package main contains scanner configurations and execution for the Sentry module
+// Sentry - Dagger module for container security auditing
+// https://github.com/sylvester-francis/Sentry
+// Licensed under MIT - see LICENSE file
+
+// Package main provides multi-scanner support for the Sentry module.
+// It includes configurations for Trivy, Grype, Snyk, Wiz, and Black Duck
+// vulnerability scanners, plus support for custom scanner containers.
 package main
 
 import (

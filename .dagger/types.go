@@ -1,28 +1,58 @@
-// Package main contains the type definitions for the Sentry security audit module
+// Sentry - Dagger module for container security auditing
+// https://github.com/sylvester-francis/Sentry
+// Licensed under MIT - see LICENSE file
+
+// Package main provides type definitions for the Sentry container security
+// audit module. It defines severity levels, check statuses, scanner types,
+// and core data structures used throughout the module.
 package main
 
-// ============================================================================
-// ENUMS - String-based enums for type safety
-// ============================================================================
-
-// Severity represents the severity level of a security finding
+// Severity represents the severity level of a security finding.
+// It is used to classify both security check results and vulnerabilities.
 type Severity string
 
+// Severity constants define the classification levels for security findings.
+// These follow industry-standard severity naming conventions.
 const (
+	// SeverityCritical indicates a critical security issue that requires
+	// immediate attention and should block deployment.
 	SeverityCritical Severity = "CRITICAL"
-	SeverityHigh     Severity = "HIGH"
-	SeverityMedium   Severity = "MEDIUM"
-	SeverityLow      Severity = "LOW"
-	SeverityInfo     Severity = "INFO"
+
+	// SeverityHigh indicates a high-priority security issue that should be
+	// addressed before production deployment.
+	SeverityHigh Severity = "HIGH"
+
+	// SeverityMedium indicates a moderate security issue that should be
+	// addressed in a timely manner.
+	SeverityMedium Severity = "MEDIUM"
+
+	// SeverityLow indicates a low-priority security issue that should be
+	// tracked and addressed when convenient.
+	SeverityLow Severity = "LOW"
+
+	// SeverityInfo indicates an informational finding that does not represent
+	// a security risk but may be worth noting.
+	SeverityInfo Severity = "INFO"
 )
 
-// CheckStatus represents the result status of a security check
+// CheckStatus represents the result status of a security check.
+// It indicates whether a check passed, failed, produced a warning, or was skipped.
 type CheckStatus string
 
+// CheckStatus constants define the possible outcomes of a security check.
 const (
+	// StatusPass indicates the security check passed successfully.
 	StatusPass CheckStatus = "PASS"
+
+	// StatusFail indicates the security check failed and requires attention.
 	StatusFail CheckStatus = "FAIL"
+
+	// StatusWarn indicates the security check produced a warning that should
+	// be reviewed but may not require immediate action.
 	StatusWarn CheckStatus = "WARN"
+
+	// StatusSkip indicates the security check was skipped, typically due to
+	// an error or missing prerequisites.
 	StatusSkip CheckStatus = "SKIP"
 )
 

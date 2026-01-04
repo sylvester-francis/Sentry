@@ -1,4 +1,10 @@
-// Package main contains security check implementations for the Sentry module
+// Sentry - Dagger module for container security auditing
+// https://github.com/sylvester-francis/Sentry
+// Licensed under MIT - see LICENSE file
+
+// Package main provides security check implementations for the Sentry module.
+// It includes container inspection utilities and security verification checks
+// such as secret detection, non-root user verification, and health check capability.
 package main
 
 import (

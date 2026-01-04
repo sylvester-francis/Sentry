@@ -1,10 +1,25 @@
-// Sentry - A Dagger module for container security auditing
+// Sentry - Dagger module for container security auditing
+// https://github.com/sylvester-francis/Sentry
+// Licensed under MIT - see LICENSE file
+
+// Sentry is a Dagger module for container security auditing.
 //
 // Sentry audits containers for security compliance by performing checks for
 // common security best practices (non-root user, secret detection, healthcheck)
 // and integrating with vulnerability scanners (Trivy, Grype, Snyk, Wiz, BlackDuck).
 // It generates compliance-ready reports in Markdown and JSON formats.
-
+//
+// # Usage
+//
+// Basic usage:
+//
+//	dagger call scan --container=nginx:latest report
+//
+// Use a different scanner:
+//
+//	dagger call scan --container=nginx:latest with-grype report
+//
+// For more information, see the README.md file.
 package main
 
 import (
