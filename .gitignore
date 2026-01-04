@@ -30,3 +30,8 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# AI assistant files
+./CLAUDE.md
+./sentry.md
+./GEMINI.md
