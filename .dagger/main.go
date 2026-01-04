@@ -2,8 +2,8 @@
 //
 // Sentry audits containers for security compliance by performing checks for
 // common security best practices (non-root user, secret detection, healthcheck)
-// and integrating with Trivy for vulnerability scanning. It generates
-// compliance-ready reports in Markdown and JSON formats.
+// and integrating with vulnerability scanners (Trivy, Grype, Snyk, Wiz, BlackDuck).
+// It generates compliance-ready reports in Markdown and JSON formats.
 
 package main
 
@@ -18,7 +18,7 @@ import (
 // AuditConfig holds the configuration for a security audit
 type AuditConfig struct {
 	Container      *dagger.Container // The container to audit
-	EnableTrivy    bool              // Run Trivy vulnerability scan
+	Scanner        ScannerConfig     // Vulnerability scanner configuration
 	FailOnSeverity Severity          // Fail if vulns >= this severity
 	CheckSecrets   bool              // Check for secrets in env vars
 	CheckNonRoot   bool              // Check for non-root user
@@ -34,26 +34,82 @@ type Sentry struct{}
 
 // Scan initializes a security audit for the given container
 // Returns an AuditConfig that can be further configured with chain methods
+// Default scanner is Trivy
 func (m *Sentry) Scan(container *dagger.Container) *AuditConfig {
 	return &AuditConfig{
 		Container:      container,
-		EnableTrivy:    true, // Enabled by default
+		Scanner:        getTrivyConfig(), // Trivy is default
 		FailOnSeverity: SeverityHigh,
-		CheckSecrets:   true, // Enabled by default
-		CheckNonRoot:   true, // Enabled by default
-		CheckHealth:    true, // Enabled by default
+		CheckSecrets:   true,
+		CheckNonRoot:   true,
+		CheckHealth:    true,
 	}
 }
 
 // ============================================================================
-// CHAIN METHODS - Configure the audit before running
+// SCANNER SELECTION METHODS
 // ============================================================================
 
-// WithTrivy enables or disables Trivy vulnerability scanning
-func (c *AuditConfig) WithTrivy(enable bool) *AuditConfig {
-	c.EnableTrivy = enable
+// WithTrivy uses Trivy as the vulnerability scanner (default)
+func (c *AuditConfig) WithTrivy() *AuditConfig {
+	c.Scanner = getTrivyConfig()
 	return c
 }
+
+// WithGrype uses Grype (Anchore) as the vulnerability scanner
+func (c *AuditConfig) WithGrype() *AuditConfig {
+	c.Scanner = getGrypeConfig()
+	return c
+}
+
+// WithSnyk uses Snyk as the vulnerability scanner
+// Requires SNYK_TOKEN environment variable
+func (c *AuditConfig) WithSnyk(token *dagger.Secret) *AuditConfig {
+	c.Scanner = getSnykConfig(token)
+	return c
+}
+
+// WithWiz uses Wiz as the vulnerability scanner
+// Requires WIZ_CLIENT_ID and WIZ_CLIENT_SECRET
+func (c *AuditConfig) WithWiz(clientId *dagger.Secret, clientSecret *dagger.Secret) *AuditConfig {
+	c.Scanner = getWizConfig(clientId, clientSecret)
+	return c
+}
+
+// WithBlackDuck uses Black Duck as the vulnerability scanner
+// Requires BLACKDUCK_URL and BLACKDUCK_API_TOKEN
+func (c *AuditConfig) WithBlackDuck(url string, token *dagger.Secret) *AuditConfig {
+	c.Scanner = getBlackDuckConfig(url, token)
+	return c
+}
+
+// WithCustomScanner uses a custom scanner container
+// You provide the container image, command args, and output format for parsing
+func (c *AuditConfig) WithCustomScanner(
+	image string,
+	args []string,
+	// +optional
+	// +default="trivy"
+	outputFormat string,
+) *AuditConfig {
+	c.Scanner = ScannerConfig{
+		Type:         ScannerCustom,
+		Image:        image,
+		Args:         args,
+		OutputFormat: outputFormat,
+	}
+	return c
+}
+
+// WithoutScanner disables vulnerability scanning entirely
+func (c *AuditConfig) WithoutScanner() *AuditConfig {
+	c.Scanner = ScannerConfig{Type: ScannerNone}
+	return c
+}
+
+// ============================================================================
+// CONFIGURATION METHODS
+// ============================================================================
 
 // FailOn sets the minimum severity that causes the audit to fail
 func (c *AuditConfig) FailOn(severity Severity) *AuditConfig {

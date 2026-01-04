@@ -26,6 +26,31 @@ const (
 	StatusSkip CheckStatus = "SKIP"
 )
 
+// ScannerType represents supported vulnerability scanners
+type ScannerType string
+
+const (
+	ScannerTrivy     ScannerType = "trivy"
+	ScannerGrype     ScannerType = "grype"
+	ScannerSnyk      ScannerType = "snyk"
+	ScannerWiz       ScannerType = "wiz"
+	ScannerBlackDuck ScannerType = "blackduck"
+	ScannerCustom    ScannerType = "custom"
+	ScannerNone      ScannerType = "none"
+)
+
+// ============================================================================
+// SCANNER CONFIGURATION
+// ============================================================================
+
+// ScannerConfig holds configuration for a vulnerability scanner
+type ScannerConfig struct {
+	Type         ScannerType // Which scanner to use
+	Image        string      // Container image for the scanner
+	Args         []string    // Command arguments to run
+	OutputFormat string      // Output format type for parsing
+}
+
 // ============================================================================
 // DATA STRUCTURES - Core types for audit results
 // ============================================================================
@@ -39,7 +64,7 @@ type SecurityCheck struct {
 	Severity    Severity    // How critical is this check
 }
 
-// Vulnerability represents a single CVE finding from Trivy
+// Vulnerability represents a single CVE finding from a scanner
 type Vulnerability struct {
 	PackageName      string   // e.g., "openssl"
 	CVEID            string   // e.g., "CVE-2023-12345"
@@ -61,6 +86,7 @@ type VulnerabilitySummary struct {
 type AuditResult struct {
 	Timestamp       string               // RFC3339 formatted timestamp
 	ImageRef        string               // Container image reference
+	ScannerUsed     string               // Which scanner was used
 	Checks          []SecurityCheck      // Results of security checks
 	Vulnerabilities []Vulnerability      // List of CVEs found
 	VulnSummary     VulnerabilitySummary // Aggregated vuln counts

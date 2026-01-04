@@ -54,16 +54,17 @@ func calculateScore(checks []SecurityCheck, vulnSummary VulnerabilitySummary) in
 // Audit runs the complete security audit and returns the result
 func (c *AuditConfig) Audit(ctx context.Context) (*AuditResult, error) {
 	result := &AuditResult{
-		Timestamp: time.Now().UTC().Format(time.RFC3339),
-		ImageRef:  "container", // Default, could extract from container metadata
+		Timestamp:   time.Now().UTC().Format(time.RFC3339),
+		ImageRef:    "container", // Default, could extract from container metadata
+		ScannerUsed: string(c.Scanner.Type),
 	}
 
 	// Run security checks
 	result.Checks = runSecurityChecks(ctx, c.Container, c)
 
-	// Run Trivy vulnerability scan if enabled
-	if c.EnableTrivy {
-		vulns, summary, err := runTrivy(ctx, c.Container)
+	// Run vulnerability scan if a scanner is configured
+	if c.Scanner.Type != ScannerNone {
+		vulns, summary, err := runScanner(ctx, c.Container, c.Scanner)
 		if err == nil {
 			result.Vulnerabilities = vulns
 			result.VulnSummary = summary
@@ -81,7 +82,7 @@ func (c *AuditConfig) Audit(ctx context.Context) (*AuditResult, error) {
 			break
 		}
 	}
-	if c.EnableTrivy && exceedsThreshold(result.Vulnerabilities, c.FailOnSeverity) {
+	if c.Scanner.Type != ScannerNone && exceedsThreshold(result.Vulnerabilities, c.FailOnSeverity) {
 		result.Passed = false
 	}
 
