@@ -1,25 +1,36 @@
-// Sentry - Dagger module for container security auditing
-// https://github.com/sylvester-francis/Sentry
-// Licensed under MIT - see LICENSE file
-
-// Sentry is a Dagger module for container security auditing.
+// Sentry - Container Security Auditing for Dagger Pipelines
 //
-// Sentry audits containers for security compliance by performing checks for
-// common security best practices (non-root user, secret detection, healthcheck)
-// and integrating with vulnerability scanners (Trivy, Grype, Snyk, Wiz, BlackDuck).
-// It generates compliance-ready reports in Markdown and JSON formats.
+// Sentry audits container images for security vulnerabilities and misconfigurations.
+// It integrates multiple vulnerability scanners (Trivy, Grype, Snyk, Wiz, Black Duck),
+// performs security best practice checks, and generates compliance-ready reports.
 //
-// # Usage
+// Features:
+//   - Multi-Scanner Support: Trivy (default), Grype, Snyk, Wiz, Black Duck, or custom scanners
+//   - Security Checks: Non-root user verification, secret detection, healthcheck validation
+//   - Multiple Report Formats: Markdown reports with executive summary, JSON for automation
+//   - Security Scoring: 0-100 score based on findings
+//   - CI/CD Integration: Pass/fail exit codes for pipeline gates
+//   - Configurable Thresholds: Fail on CRITICAL, HIGH, MEDIUM, or LOW severity
 //
-// Basic usage:
+// Quick Start:
 //
+//	# Basic audit with Trivy (default)
 //	dagger call scan --container=nginx:latest report
 //
-// Use a different scanner:
+//	# Use Grype scanner
+//	dagger call scan --container=myapp:latest with-grype report
 //
-//	dagger call scan --container=nginx:latest with-grype report
+//	# Get JSON output
+//	dagger call scan --container=myapp:latest json
 //
-// For more information, see the README.md file.
+//	# CI/CD exit code (0=pass, 1=fail)
+//	dagger call scan --container=myapp:latest exit-code
+//
+//	# Configure failure threshold
+//	dagger call scan --container=myapp:latest fail-on --severity=CRITICAL report
+//
+// GitHub: https://github.com/sylvester-francis/Sentry
+// License: MIT
 package main
 
 import (
