@@ -50,7 +50,10 @@ type Sentry struct{}
 // Scan initializes a security audit for the given container
 // Returns an AuditConfig that can be further configured with chain methods
 // Default scanner is Trivy
-func (m *Sentry) Scan(container *dagger.Container) *AuditConfig {
+func (m *Sentry) Scan(
+	// +required
+	container *dagger.Container, // Container image to audit for security vulnerabilities
+) *AuditConfig {
 	return &AuditConfig{
 		Container:      container,
 		Scanner:        getTrivyConfig(), // Trivy is default
@@ -79,21 +82,34 @@ func (c *AuditConfig) WithGrype() *AuditConfig {
 
 // WithSnyk uses Snyk as the vulnerability scanner
 // Requires SNYK_TOKEN environment variable
-func (c *AuditConfig) WithSnyk(token *dagger.Secret) *AuditConfig {
+func (c *AuditConfig) WithSnyk(
+	// +required
+	token *dagger.Secret, // Snyk authentication token (env:SNYK_TOKEN)
+) *AuditConfig {
 	c.Scanner = getSnykConfig(token)
 	return c
 }
 
 // WithWiz uses Wiz as the vulnerability scanner
 // Requires WIZ_CLIENT_ID and WIZ_CLIENT_SECRET
-func (c *AuditConfig) WithWiz(clientId *dagger.Secret, clientSecret *dagger.Secret) *AuditConfig {
+func (c *AuditConfig) WithWiz(
+	// +required
+	clientId *dagger.Secret, // Wiz client ID credential
+	// +required
+	clientSecret *dagger.Secret, // Wiz client secret credential
+) *AuditConfig {
 	c.Scanner = getWizConfig(clientId, clientSecret)
 	return c
 }
 
 // WithBlackDuck uses Black Duck as the vulnerability scanner
 // Requires BLACKDUCK_URL and BLACKDUCK_API_TOKEN
-func (c *AuditConfig) WithBlackDuck(url string, token *dagger.Secret) *AuditConfig {
+func (c *AuditConfig) WithBlackDuck(
+	// +required
+	url string, // Black Duck server URL
+	// +required
+	token *dagger.Secret, // Black Duck API token
+) *AuditConfig {
 	c.Scanner = getBlackDuckConfig(url, token)
 	return c
 }
@@ -101,11 +117,13 @@ func (c *AuditConfig) WithBlackDuck(url string, token *dagger.Secret) *AuditConf
 // WithCustomScanner uses a custom scanner container
 // You provide the container image, command args, and output format for parsing
 func (c *AuditConfig) WithCustomScanner(
-	image string,
-	args []string,
+	// +required
+	image string, // Scanner container image (e.g., "aquasec/trivy:latest")
+	// +required
+	args []string, // Command arguments to pass to the scanner
 	// +optional
 	// +default="trivy"
-	outputFormat string,
+	outputFormat string, // Output format for parsing (trivy, grype, snyk, etc.)
 ) *AuditConfig {
 	c.Scanner = ScannerConfig{
 		Type:         ScannerCustom,
@@ -127,25 +145,37 @@ func (c *AuditConfig) WithoutScanner() *AuditConfig {
 // ============================================================================
 
 // FailOn sets the minimum severity that causes the audit to fail
-func (c *AuditConfig) FailOn(severity Severity) *AuditConfig {
+func (c *AuditConfig) FailOn(
+	// +required
+	severity Severity, // Minimum severity level (CRITICAL, HIGH, MEDIUM, LOW, INFO)
+) *AuditConfig {
 	c.FailOnSeverity = severity
 	return c
 }
 
 // WithSecretCheck enables or disables secret detection in environment variables
-func (c *AuditConfig) WithSecretCheck(enable bool) *AuditConfig {
+func (c *AuditConfig) WithSecretCheck(
+	// +required
+	enable bool, // Enable or disable secret detection (true to enable, false to disable)
+) *AuditConfig {
 	c.CheckSecrets = enable
 	return c
 }
 
 // WithNonRootCheck enables or disables the non-root user check
-func (c *AuditConfig) WithNonRootCheck(enable bool) *AuditConfig {
+func (c *AuditConfig) WithNonRootCheck(
+	// +required
+	enable bool, // Enable or disable non-root user check (true to enable, false to disable)
+) *AuditConfig {
 	c.CheckNonRoot = enable
 	return c
 }
 
 // WithHealthCheck enables or disables the healthcheck verification
-func (c *AuditConfig) WithHealthCheck(enable bool) *AuditConfig {
+func (c *AuditConfig) WithHealthCheck(
+	// +required
+	enable bool, // Enable or disable healthcheck verification (true to enable, false to disable)
+) *AuditConfig {
 	c.CheckHealth = enable
 	return c
 }
