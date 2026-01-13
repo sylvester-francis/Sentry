@@ -10,12 +10,12 @@ Sentry is a Dagger module that audits container images for security vulnerabilit
 
 ## Features
 
-- 🔍 **Multi-Scanner Support** - Trivy, Grype, Snyk, Wiz, Black Duck, or custom scanners
-- ✅ **Security Checks** - Non-root user, secret detection, healthcheck validation
-- 📊 **Multiple Report Formats** - Markdown reports with executive summary, JSON for automation
-- 🎯 **Security Scoring** - 0-100 score based on findings
-- 🚦 **CI/CD Integration** - Pass/fail exit codes for pipeline gates
-- ⚙️ **Configurable Thresholds** - Fail on CRITICAL, HIGH, MEDIUM, or LOW severity
+- **Multi-Scanner Support** - Trivy, Grype, Snyk, Wiz, Black Duck, or custom scanners
+- **Security Checks** - Non-root user, secret detection, healthcheck validation
+- **Multiple Report Formats** - Markdown reports with executive summary, JSON for automation
+- **Security Scoring** - 0-100 score based on findings
+- **CI/CD Integration** - Pass/fail exit codes for pipeline gates
+- **Configurable Thresholds** - Fail on CRITICAL, HIGH, MEDIUM, or LOW severity
 
 ## Quick Start
 
@@ -232,11 +232,11 @@ Verifies `curl` or `wget` is available for implementing container health checks.
 
 | Scanner | Image | Best For | Auth Required |
 |---------|-------|----------|---------------|
-| **Trivy** | `aquasec/trivy:latest` | General purpose, fast | ❌ |
-| **Grype** | `anchore/grype:latest` | SBOM-based analysis | ❌ |
-| **Snyk** | `snyk/snyk:docker` | Enterprise, dev-friendly | ✅ Token |
-| **Wiz** | `wizsecurity/wiz-cli:latest` | Cloud-native, CSPM | ✅ Credentials |
-| **Black Duck** | `blackducksoftware/detect:latest` | License compliance | ✅ URL + Token |
+| **Trivy** | `aquasec/trivy:latest` | General purpose, fast | No |
+| **Grype** | `anchore/grype:latest` | SBOM-based analysis | No |
+| **Snyk** | `snyk/snyk:docker` | Enterprise, dev-friendly | Yes - Token |
+| **Wiz** | `wizsecurity/wiz-cli:latest` | Cloud-native, CSPM | Yes - Credentials |
+| **Black Duck** | `blackducksoftware/detect:latest` | License compliance | Yes - URL + Token |
 
 ## Report Formats
 
@@ -386,6 +386,6 @@ MIT License - see [LICENSE](https://github.com/sylvester-francis/Sentry/blob/mai
 
 <div align="center">
 
-**Built with [Dagger](https://dagger.io)** 🚀
+**Built with [Dagger](https://dagger.io)**
 
 </div>
