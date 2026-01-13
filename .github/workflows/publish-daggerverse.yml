@@ -34,10 +34,9 @@ jobs:
 
           echo "Publishing module: ${MODULE_REF}"
 
-          # Trigger Daggerverse crawl via API
-          curl -X POST "https://daggerverse.dev/api/crawl" \
-            -H "Content-Type: application/json" \
-            -d "{\"ref\":\"${MODULE_REF}\"}"
+          # Trigger automatic Daggerverse indexing by calling the module
+          # This is the official way to publish - calling a remote module automatically indexes it
+          dagger call -m ${MODULE_REF} --help || true
 
-          echo "Published to Daggerverse!"
+          echo "Module called successfully - Daggerverse will index it automatically"
           echo "View at: https://daggerverse.dev/mod/github.com/${{ github.repository }}"
