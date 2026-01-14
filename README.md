@@ -116,19 +116,21 @@ flowchart LR
 Sentry is a **Dagger Module** — a reusable component you can call from any Dagger pipeline.
 
 ```mermaid
-%%{init: {'theme': 'neutral'}}%%
-journey
-    title Developer Experience
-    section Traditional CI/CD
-      Write YAML config: 3: Developer
-      Debug syntax errors: 1: Developer
-      Push and wait for CI: 2: Developer
-      Fix CI-only failures: 1: Developer
-    section With Dagger
-      Write code with IDE: 5: Developer
-      Test locally first: 5: Developer
-      Push with confidence: 5: Developer
-      Same result in CI: 5: Developer
+flowchart TB
+    subgraph traditional["Traditional CI/CD"]
+        direction TB
+        T1[Write YAML config] --> T2[Debug syntax errors]
+        T2 --> T3[Push and wait for CI]
+        T3 --> T4[Fix CI-only failures]
+        T4 -.->|repeat| T1
+    end
+    
+    subgraph dagger["With Dagger"]
+        direction TB
+        D1[Write code with IDE] --> D2[Test locally first]
+        D2 --> D3[Push with confidence]
+        D3 --> D4[Same result in CI]
+    end
 ```
 
 ---
