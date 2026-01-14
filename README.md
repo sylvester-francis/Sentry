@@ -40,6 +40,30 @@ Sentry is a security auditing tool that scans your container images for vulnerab
 - **Reports** — Markdown summaries, JSON for automation, 0-100 security scores
 - **CI/CD Gates** — Pass/fail exit codes to block vulnerable deployments
 
+```mermaid
+mindmap
+  root((Sentry))
+    Scanners
+      Trivy
+      Grype
+      Snyk
+      Wiz
+      Black Duck
+    Security Checks
+      Non-Root User
+      Secret Detection
+      Health Check
+    Output Formats
+      Markdown Report
+      JSON
+      Exit Code
+      Score
+    Configuration
+      Severity Threshold
+      Ignore CVEs
+      Disable Checks
+```
+
 ### Architecture
 
 ```mermaid
@@ -89,6 +113,21 @@ flowchart LR
 
 Sentry is a **Dagger Module** — a reusable component you can call from any Dagger pipeline.
 
+```mermaid
+journey
+    title Developer Experience
+    section Traditional CI/CD
+      Write YAML config: 3: Developer
+      Debug syntax errors: 1: Developer
+      Push and wait for CI: 2: Developer
+      Fix CI-only failures: 1: Developer
+    section With Dagger
+      Write code with IDE: 5: Developer
+      Test locally first: 5: Developer
+      Push with confidence: 5: Developer
+      Same result in CI: 5: Developer
+```
+
 ---
 
 ## Installation
@@ -120,6 +159,18 @@ Sentry runs directly from the Daggerverse — no cloning or installing needed.
 ## Quick Start
 
 ### Your First Scan
+
+```mermaid
+stateDiagram-v2
+    [*] --> Scanning: dagger call scan
+    Scanning --> SecurityChecks: Container loaded
+    SecurityChecks --> VulnScan: Checks complete
+    VulnScan --> Scoring: Scan complete
+    Scoring --> Passed: score >= threshold
+    Scoring --> Failed: score < threshold
+    Passed --> [*]: Exit code 0
+    Failed --> [*]: Exit code 1
+```
 
 Scan any container image with a single command:
 
@@ -436,6 +487,30 @@ Machine-readable format for automation and integration:
 - HIGH vulnerability: -5 points  
 - MEDIUM vulnerability: -2 points
 - Failed security check: -15 to -25 points
+
+```mermaid
+pie showData
+    title Example Vulnerability Distribution
+    "Critical" : 0
+    "High" : 2
+    "Medium" : 5
+    "Low" : 5
+```
+
+```mermaid
+quadrantChart
+    title Security Score Interpretation
+    x-axis Low Risk --> High Risk
+    y-axis Low Confidence --> High Confidence
+    quadrant-1 Review Findings
+    quadrant-2 Safe to Deploy
+    quadrant-3 Needs Investigation
+    quadrant-4 Block Deployment
+    Score 90-100: [0.15, 0.85]
+    Score 70-89: [0.35, 0.70]
+    Score 50-69: [0.60, 0.45]
+    Score 0-49: [0.85, 0.25]
+```
 
 ---
 
