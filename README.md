@@ -41,27 +41,39 @@ Sentry is a security auditing tool that scans your container images for vulnerab
 - **CI/CD Gates** — Pass/fail exit codes to block vulnerable deployments
 
 ```mermaid
-mindmap
-  root((Sentry))
-    Scanners
-      Trivy
-      Grype
-      Snyk
-      Wiz
-      Black Duck
-    Security Checks
-      Non-Root User
-      Secret Detection
-      Health Check
-    Output Formats
-      Markdown Report
-      JSON
-      Exit Code
-      Score
-    Configuration
-      Severity Threshold
-      Ignore CVEs
-      Disable Checks
+block-beta
+    columns 4
+    
+    block:scanners["Scanners"]:1
+        columns 1
+        Trivy
+        Grype
+        Snyk
+        Wiz
+        BlackDuck["Black Duck"]
+    end
+    
+    block:checks["Security Checks"]:1
+        columns 1
+        NonRoot["Non-Root User"]
+        Secrets["Secret Detection"]
+        Health["Health Check"]
+    end
+    
+    block:output["Output Formats"]:1
+        columns 1
+        Report["Markdown Report"]
+        JSON
+        ExitCode["Exit Code"]
+        Score
+    end
+    
+    block:config["Configuration"]:1
+        columns 1
+        Threshold["Severity Threshold"]
+        Ignore["Ignore CVEs"]
+        Disable["Disable Checks"]
+    end
 ```
 
 ### Architecture
