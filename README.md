@@ -40,6 +40,42 @@ Sentry is a security auditing tool that scans your container images for vulnerab
 - **Reports** — Markdown summaries, JSON for automation, 0-100 security scores
 - **CI/CD Gates** — Pass/fail exit codes to block vulnerable deployments
 
+### Architecture
+
+```mermaid
+flowchart LR
+    subgraph Input
+        A[Container Image]
+    end
+    
+    subgraph Sentry["Sentry Module"]
+        B[Security Checks]
+        C[Vulnerability Scanner]
+        D[Score Calculator]
+    end
+    
+    subgraph Scanners["Scanner Options"]
+        E[Trivy]
+        F[Grype]
+        G[Snyk]
+        H[Wiz]
+        I[Black Duck]
+    end
+    
+    subgraph Output
+        J[Report]
+        K[JSON]
+        L[Exit Code]
+    end
+    
+    A --> B
+    A --> C
+    C --> E & F & G & H & I
+    B --> D
+    C --> D
+    D --> J & K & L
+```
+
 ---
 
 ## What is Dagger?
@@ -235,6 +271,26 @@ Sentry performs these automated security checks:
 | **Secret Detection** | HIGH | Scans environment variables for exposed credentials |
 | **Health Check** | INFO | Verifies `curl` or `wget` is available for health probes |
 
+```mermaid
+flowchart TD
+    A[Container] --> B{Non-Root Check}
+    B -->|UID > 0| C[PASS]
+    B -->|UID = 0| D[FAIL - HIGH]
+    
+    A --> E{Secret Detection}
+    E -->|No secrets found| F[PASS]
+    E -->|Secrets detected| G[FAIL - HIGH]
+    
+    A --> H{Health Check}
+    H -->|curl/wget available| I[PASS]
+    H -->|Not available| J[WARN - INFO]
+    
+    C & D & F & G & I & J --> K[Calculate Score]
+    K --> L{Score >= Threshold?}
+    L -->|Yes| M[PASSED]
+    L -->|No| N[FAILED]
+```
+
 ### Secret Detection Patterns
 
 Sentry detects these credential patterns in environment variables:
@@ -248,6 +304,27 @@ Sentry detects these credential patterns in environment variables:
 ---
 
 ## CI/CD Integration
+
+```mermaid
+sequenceDiagram
+    participant Dev as Developer
+    participant CI as CI/CD Pipeline
+    participant Sentry as Sentry Module
+    participant Registry as Container Registry
+    
+    Dev->>CI: Push Code
+    CI->>CI: Build Container
+    CI->>Sentry: Scan Container
+    Sentry->>Sentry: Run Security Checks
+    Sentry->>Sentry: Run Vulnerability Scan
+    Sentry->>CI: Return Exit Code
+    alt Passed (exit code 0)
+        CI->>Registry: Push Container
+        CI->>Dev: Deploy Success
+    else Failed (exit code 1)
+        CI->>Dev: Block Deployment
+    end
+```
 
 ### GitHub Actions
 
