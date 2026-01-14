@@ -41,7 +41,6 @@ Sentry is a security auditing tool that scans your container images for vulnerab
 - **CI/CD Gates** — Pass/fail exit codes to block vulnerable deployments
 
 ```mermaid
-%%{init: {'theme': 'neutral'}}%%
 mindmap
   root((Sentry))
     Scanners
@@ -68,7 +67,6 @@ mindmap
 ### Architecture
 
 ```mermaid
-%%{init: {'theme': 'neutral'}}%%
 flowchart LR
     subgraph Input
         A[Container Image]
@@ -166,7 +164,6 @@ Sentry runs directly from the Daggerverse — no cloning or installing needed.
 ### Your First Scan
 
 ```mermaid
-%%{init: {'theme': 'neutral'}}%%
 stateDiagram-v2
     [*] --> Scanning: dagger call scan
     Scanning --> SecurityChecks: Container loaded
@@ -329,7 +326,6 @@ Sentry performs these automated security checks:
 | **Health Check** | INFO | Verifies `curl` or `wget` is available for health probes |
 
 ```mermaid
-%%{init: {'theme': 'neutral'}}%%
 flowchart TD
     A[Container] --> B{Non-Root Check}
     B -->|UID > 0| C[PASS]
@@ -364,7 +360,6 @@ Sentry detects these credential patterns in environment variables:
 ## CI/CD Integration
 
 ```mermaid
-%%{init: {'theme': 'neutral'}}%%
 sequenceDiagram
     participant Dev as Developer
     participant CI as CI/CD Pipeline
@@ -497,7 +492,6 @@ Machine-readable format for automation and integration:
 - Failed security check: -15 to -25 points
 
 ```mermaid
-%%{init: {'theme': 'neutral'}}%%
 pie showData
     title Example Vulnerability Distribution
     "Critical" : 0
@@ -507,7 +501,6 @@ pie showData
 ```
 
 ```mermaid
-%%{init: {'theme': 'neutral'}}%%
 quadrantChart
     title Security Score Interpretation
     x-axis Low Risk --> High Risk
