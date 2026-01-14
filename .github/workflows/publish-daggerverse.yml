@@ -103,23 +103,20 @@ jobs:
             RELEASE_NOTES=$(git log --pretty=format:"- %s (%h)" ${PREV_TAG}..${TAG})
           fi
 
-          # Create release with auto-generated notes
-          NOTES=$(cat <<EOF
-## Changes
-
-$RELEASE_NOTES
-
----
-
-**Full Changelog**: https://github.com/${{ github.repository }}/compare/${PREV_TAG}...${TAG}
-
-**Daggerverse**: https://daggerverse.dev/mod/github.com/${{ github.repository }}@${TAG}
-EOF
-)
+          # Create release notes file
+          echo "## Changes" > release_notes.md
+          echo "" >> release_notes.md
+          echo "$RELEASE_NOTES" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "---" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/${PREV_TAG}...${TAG}" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "**Daggerverse**: https://daggerverse.dev/mod/github.com/${{ github.repository }}@${TAG}" >> release_notes.md
 
           gh release create $TAG \
             --title "Release $TAG" \
-            --notes "$NOTES"
+            --notes-file release_notes.md
 
       - name: Install Dagger CLI
         run: |
